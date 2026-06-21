@@ -1,6 +1,6 @@
 <div align="center">
 
-# EdgeFlow
+# RIVET
 
 ### Distributed Edge Proxy Platform
 
@@ -26,9 +26,9 @@ A high-performance, distributed reverse proxy platform inspired by modern CDN ar
 
 # Overview
 
-EdgeFlow is a distributed edge proxy platform that simulates how modern Content Delivery Networks (CDNs) accelerate, protect, and monitor web traffic.
+Rivet is a distributed edge proxy platform that simulates how modern Content Delivery Networks (CDNs) accelerate, protect, and monitor web traffic.
 
-Instead of sending every client request directly to the backend server, EdgeFlow routes traffic through multiple intelligent edge nodes capable of:
+Instead of sending every client request directly to the backend server, Rivet routes traffic through multiple intelligent edge nodes capable of:
 
 - Reverse proxying requests
 - Response caching
@@ -136,7 +136,7 @@ The project demonstrates core distributed systems concepts used by infrastructur
 # Repository Structure
 
 ```
-edgeflow/
+Rivet/
 
 │
 ├── edge/
@@ -219,7 +219,7 @@ Clone the repository
 
 ```bash
 git clone <repository-url>
-cd edgeflow
+cd Rivet
 ```
 
 Start the platform
