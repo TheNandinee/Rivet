@@ -1,162 +1,141 @@
+# Rivet
+
 <div align="center">
 
-# RIVET
+### A Distributed Edge Proxy Platform
 
-### Distributed Edge Proxy Platform
-
-A high-performance, distributed reverse proxy platform inspired by modern CDN architectures, featuring intelligent edge caching, configurable rate limiting, automatic failover, and real-time observability.
-
-![Python](https://img.shields.io/badge/Python-3.12-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-Framework-green)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
-![Prometheus](https://img.shields.io/badge/Prometheus-Monitoring-orange)
-![Grafana](https://img.shields.io/badge/Grafana-Dashboards-F46800)
+*Inspired by modern CDN architectures for intelligent traffic routing, caching, rate limiting, failover, and observability.*
 
 ---
 
 **Built by**
 
-**Paridhi Sharma** 
-**Nandinee**
-**Lakshay Yadav**
+**Paridhi Sharma** • **Nandinee** • **Lakshay Yadav**
 
 </div>
 
 ---
 
-# Overview
+## Overview
 
-Rivet is a distributed edge proxy platform that simulates how modern Content Delivery Networks (CDNs) accelerate, protect, and monitor web traffic.
+Rivet is a distributed edge proxy platform that simulates the core infrastructure behind modern Content Delivery Networks (CDNs) and API Gateways.
 
-Instead of sending every client request directly to the backend server, Rivet routes traffic through multiple intelligent edge nodes capable of:
+Instead of allowing every client request to directly reach the backend, Rivet routes traffic through multiple edge nodes that intelligently cache responses, enforce rate limits, monitor traffic, and automatically recover from failures.
 
-- Reverse proxying requests
-- Response caching
-- Rate limiting
-- Traffic monitoring
-- Automatic failover
-- Load balancing
-- Real-time metrics collection
-
-The project demonstrates core distributed systems concepts used by infrastructure companies such as Cloudflare, Fastly, Akamai, and large-scale cloud platforms.
+The project demonstrates fundamental distributed systems concepts including reverse proxying, edge caching, load balancing, failover, observability, and traffic protection using a modular microservices architecture.
 
 ---
 
-# Features
+## Key Features
 
 ### Reverse Proxy
 
-- Multi-node edge architecture
-- HTTP request forwarding
-- Connection pooling
-- Retry handling
-- Timeout management
-
----
+* Multi-node edge architecture
+* HTTP request forwarding
+* Connection pooling
+* Retry & timeout handling
+* Reverse proxy routing
 
 ### Intelligent Caching
 
-- In-memory LRU cache
-- Configurable TTL
-- Cache invalidation
-- Cache hit/miss tracking
-- Reduced backend latency
+* In-memory LRU cache
+* Configurable TTL
+* Cache invalidation
+* Cache hit/miss tracking
+* Reduced backend latency
 
----
+### Traffic Protection
 
-### Rate Limiting
+* Token Bucket rate limiting
+* Per-IP request throttling
+* API Key based limits
+* Basic bot detection
 
-- Token Bucket algorithm
-- Per-IP throttling
-- Per API Key limits
-- Burst traffic protection
+### Load Balancing & Failover
 
----
-
-### Load Balancing
-
-- Multiple edge nodes
-- Health-aware routing
-- Automatic failover
-- Traffic redistribution
-
----
+* Multiple edge nodes
+* Health-aware routing
+* Automatic failover
+* Traffic redistribution
 
 ### Observability
 
-- Prometheus metrics
-- Grafana dashboards
-- Request latency
-- Cache statistics
-- Node health
-- Traffic analytics
+* Prometheus metrics
+* Grafana dashboards
+* Request latency monitoring
+* Cache analytics
+* Node health monitoring
 
 ---
 
 # Architecture
 
 ```
-                Clients
-                    │
-                    ▼
-          ┌───────────────────┐
-          │   Edge Node 1     │
-          ├───────────────────┤
-          │   Edge Node 2     │
-          ├───────────────────┤
-          │   Edge Node 3     │
-          └───────────────────┘
-                    │
-                    ▼
-             Control Plane
-                    │
-                    ▼
-             Origin Server
+                     Clients
+                         │
+                         ▼
+              ┌────────────────────┐
+              │     Edge Nodes     │
+              │ ────────────────   │
+              │  Edge 1            │
+              │  Edge 2            │
+              │  Edge 3            │
+              └─────────┬──────────┘
+                        │
+                        ▼
+                 Control Plane
+                        │
+                        ▼
+                  Origin Server
 
-         Prometheus + Grafana
+          ┌────────────────────────────┐
+          │  Prometheus + Grafana      │
+          │  Metrics & Dashboards      │
+          └────────────────────────────┘
 ```
-
----
-
-# Technology Stack
-
-| Component | Technology |
-|------------|------------|
-| Backend | FastAPI |
-| Language | Python |
-| HTTP Client | httpx |
-| Monitoring | Prometheus |
-| Dashboards | Grafana |
-| Containerization | Docker |
-| Load Testing | k6 / wrk |
-| Caching | Custom LRU Cache |
 
 ---
 
 # Repository Structure
 
 ```
-Rivet/
-
+rivet/
 │
-├── edge/
-│   ├── proxy.py
-│   ├── cache.py
-│   └── metrics.py
-│
-├── origin/
-│   └── server.py
+├── services/
+│   ├── edge/
+│   ├── origin/
+│   └── control-plane/
 │
 ├── monitoring/
-│   ├── prometheus.yml
-│   └── grafana_dashboard.json
+│   ├── prometheus/
+│   ├── grafana/
+│   └── load-tests/
 │
+├── shared/
+│
+├── docs/
+├── scripts/
 ├── tests/
 │
 ├── docker-compose.yml
-│
-└── README.md
+├── README.md
+└── requirements-dev.txt
 ```
+
+---
+
+# Technology Stack
+
+| Category         | Technology              |
+| ---------------- | ----------------------- |
+| Language         | Python 3.12             |
+| Framework        | FastAPI                 |
+| HTTP Client      | httpx                   |
+| Monitoring       | Prometheus              |
+| Dashboards       | Grafana                 |
+| Containerization | Docker & Docker Compose |
+| Load Testing     | k6 / wrk                |
+| Configuration    | Pydantic Settings       |
 
 ---
 
@@ -164,16 +143,16 @@ Rivet/
 
 ## Paridhi Sharma
 
-### Networking & Proxy Layer
+### Edge Infrastructure
 
-- Reverse Proxy
-- Request Forwarding
-- HTTP Routing
-- Caching Layer
-- Load Balancing
-- Failover
-- Health Checks
-- Performance Optimization
+* Reverse Proxy
+* Request Forwarding
+* HTTP Routing
+* Caching Layer
+* Load Balancing
+* Health Checks
+* Automatic Failover
+* Performance Optimization
 
 ---
 
@@ -181,35 +160,47 @@ Rivet/
 
 ### Security & Traffic Protection
 
-- Origin Server
-- Token Bucket Rate Limiter
-- Bot Detection
-- Request Fingerprinting
-- Abuse Simulation
-- Logging Infrastructure
+* Origin Server
+* Token Bucket Rate Limiter
+* Bot Detection
+* Request Validation
+* Logging Infrastructure
+* Abuse Simulation
 
 ---
 
 ## Lakshay Yadav
 
-### Observability
+### Monitoring & Observability
 
-- Prometheus Integration
-- Grafana Dashboards
-- Metrics Collection
-- Load Testing
-- Reporting
+* Prometheus Integration
+* Grafana Dashboards
+* Metrics Collection
+* Load Testing
+* Performance Reporting
+
+---
+
+# Services
+
+| Service       | Purpose                                      |
+| ------------- | -------------------------------------------- |
+| Edge          | Reverse proxy, caching, routing              |
+| Origin        | Backend application serving requests         |
+| Control Plane | Configuration management & service discovery |
+| Prometheus    | Metrics collection                           |
+| Grafana       | Visualization & dashboards                   |
 
 ---
 
 # Performance Goals
 
-- Cache Hit Ratio ≥ 80%
-- 5× reduction in response latency
-- Automatic failover within 10 seconds
-- Real-time monitoring
-- Dockerized deployment
-- One-command startup
+* Cache Hit Ratio ≥ **80%**
+* **5×** reduction in cached request latency
+* Automatic node failover within **10 seconds**
+* Stable latency under burst traffic
+* Real-time monitoring through Grafana
+* One-command deployment using Docker Compose
 
 ---
 
@@ -219,7 +210,7 @@ Clone the repository
 
 ```bash
 git clone <repository-url>
-cd Rivet
+cd rivet
 ```
 
 Start the platform
@@ -228,46 +219,66 @@ Start the platform
 docker compose up --build
 ```
 
-Access the services
+Available Services
 
-| Service | URL |
-|----------|-----|
-| Edge Node | localhost:8000 |
-| Origin Server | localhost:9000 |
-| Prometheus | localhost:9090 |
-| Grafana | localhost:3000 |
+| Service       | URL                   |
+| ------------- | --------------------- |
+| Edge Node     | http://localhost:8000 |
+| Origin Server | http://localhost:9000 |
+| Prometheus    | http://localhost:9090 |
+| Grafana       | http://localhost:3000 |
 
 ---
 
-# Future Enhancements
+# Development Roadmap
 
-- Distributed cache using Redis
-- TLS termination
-- OpenTelemetry tracing
-- Adaptive rate limiting
-- WebSocket proxying
-- Geo-aware routing
-- Service discovery
-- Kubernetes deployment
+### Phase 1
+
+* Project setup
+* Docker infrastructure
+* Reverse proxy
+* Origin server
+
+### Phase 2
+
+* LRU caching
+* TTL support
+* Cache invalidation
+* Metrics integration
+
+### Phase 3
+
+* Rate limiting
+* Traffic protection
+* Control plane
+
+### Phase 4
+
+* Load balancing
+* Automatic failover
+* Dashboard completion
+* Performance benchmarking
 
 ---
 
 # Learning Outcomes
 
-This project explores practical distributed systems concepts including:
+This project explores practical backend and distributed systems concepts including:
 
-- Reverse Proxy Design
-- HTTP Networking
-- Distributed Caching
-- Rate Limiting Algorithms
-- Fault Tolerance
-- Load Balancing
-- Observability
-- Containerized Deployment
-- Performance Engineering
+* Reverse Proxy Design
+* Distributed Systems
+* Edge Computing
+* HTTP Networking
+* Load Balancing
+* Caching Strategies
+* Rate Limiting Algorithms
+* Fault Tolerance
+* Observability
+* Containerized Deployment
+* Performance Engineering
 
 ---
 
 # License
 
-This project is intended for educational purposes.
+This project is developed for educational and learning purposes.
