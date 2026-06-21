@@ -16,8 +16,8 @@ A high-performance, distributed reverse proxy platform inspired by modern CDN ar
 
 **Built by**
 
-**Paridhi Sharma**
-**Nandinee**
+**Paridhi Sharma--** 
+**Nandinee--**
 **Lakshay Yadav**
 
 </div>
