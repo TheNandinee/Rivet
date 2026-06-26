@@ -1,284 +1,87 @@
-# Rivet
+# Rivet — Distributed Edge-Proxy Platform
 
-<div align="center">
+A distributed edge caching, rate-limiting, and bot-protection proxy that simulates how a
+CDN accelerates and protects traffic. Multiple dockerized edge nodes sit in front of an
+origin server, cache responses, throttle abusive clients, and expose metrics to
+Prometheus + Grafana.
 
-### A Distributed Edge Proxy Platform
-
-*Inspired by modern CDN architectures for intelligent traffic routing, caching, rate limiting, failover, and observability.*
-
----
-
-**Built by**
-
-**Paridhi Sharma** • **Nandinee** • **Lakshay Yadav**
-
-</div>
-
----
-
-## Overview
-
-Rivet is a distributed edge proxy platform that simulates the core infrastructure behind modern Content Delivery Networks (CDNs) and API Gateways.
-
-Instead of allowing every client request to directly reach the backend, Rivet routes traffic through multiple edge nodes that intelligently cache responses, enforce rate limits, monitor traffic, and automatically recover from failures.
-
-The project demonstrates fundamental distributed systems concepts including reverse proxying, edge caching, load balancing, failover, observability, and traffic protection using a modular microservices architecture.
-
----
-
-## Key Features
-
-### Reverse Proxy
-
-* Multi-node edge architecture
-* HTTP request forwarding
-* Connection pooling
-* Retry & timeout handling
-* Reverse proxy routing
-
-### Intelligent Caching
-
-* In-memory LRU cache
-* Configurable TTL
-* Cache invalidation
-* Cache hit/miss tracking
-* Reduced backend latency
-
-### Traffic Protection
-
-* Token Bucket rate limiting
-* Per-IP request throttling
-* API Key based limits
-* Basic bot detection
-
-### Load Balancing & Failover
-
-* Multiple edge nodes
-* Health-aware routing
-* Automatic failover
-* Traffic redistribution
-
-### Observability
-
-* Prometheus metrics
-* Grafana dashboards
-* Request latency monitoring
-* Cache analytics
-* Node health monitoring
-
----
-
-# Architecture
-
-```
-                     Clients
-                         │
-                         ▼
-              ┌────────────────────┐
-              │     Edge Nodes     │
-              │ ────────────────   │
-              │  Edge 1            │
-              │  Edge 2            │
-              │  Edge 3            │
-              └─────────┬──────────┘
-                        │
-                        ▼
-                 Control Plane
-                        │
-                        ▼
-                  Origin Server
-
-          ┌────────────────────────────┐
-          │  Prometheus + Grafana      │
-          │  Metrics & Dashboards      │
-          └────────────────────────────┘
-```
-
----
-
-# Repository Structure
-
-```
-rivet/
-│
-├── services/
-│   ├── edge/
-│   ├── origin/
-│   └── control-plane/
-│
-├── monitoring/
-│   ├── prometheus/
-│   ├── grafana/
-│   └── load-tests/
-│
-├── shared/
-│
-├── docs/
-├── scripts/
-├── tests/
-│
-├── docker-compose.yml
-├── README.md
-└── requirements-dev.txt
-```
-
----
-
-# Technology Stack
-
-| Category         | Technology              |
-| ---------------- | ----------------------- |
-| Language         | Python 3.12             |
-| Framework        | FastAPI                 |
-| HTTP Client      | httpx                   |
-| Monitoring       | Prometheus              |
-| Dashboards       | Grafana                 |
-| Containerization | Docker & Docker Compose |
-| Load Testing     | k6 / wrk                |
-| Configuration    | Pydantic Settings       |
-
----
-
-# Team Responsibilities
-
-## Paridhi Sharma
-
-### Edge Infrastructure
-
-* Reverse Proxy
-* Request Forwarding
-* HTTP Routing
-* Caching Layer
-* Load Balancing
-* Health Checks
-* Automatic Failover
-* Performance Optimization
-
----
-
-## Nandinee
-
-### Security & Traffic Protection
-
-* Origin Server
-* Token Bucket Rate Limiter
-* Bot Detection
-* Request Validation
-* Logging Infrastructure
-* Abuse Simulation
-
----
-
-## Lakshay Yadav
-
-### Monitoring & Observability
-
-* Prometheus Integration
-* Grafana Dashboards
-* Metrics Collection
-* Load Testing
-* Performance Reporting
-
----
-
-# Services
-
-| Service       | Purpose                                      |
-| ------------- | -------------------------------------------- |
-| Edge          | Reverse proxy, caching, routing              |
-| Origin        | Backend application serving requests         |
-| Control Plane | Configuration management & service discovery |
-| Prometheus    | Metrics collection                           |
-| Grafana       | Visualization & dashboards                   |
-
----
-
-# Performance Goals
-
-* Cache Hit Ratio ≥ **80%**
-* **5×** reduction in cached request latency
-* Automatic node failover within **10 seconds**
-* Stable latency under burst traffic
-* Real-time monitoring through Grafana
-* One-command deployment using Docker Compose
-
----
-
-# Getting Started
-
-Clone the repository
-
-```bash
-git clone <repository-url>
-cd rivet
-```
-
-Start the platform
+## Quick start
 
 ```bash
 docker compose up --build
 ```
 
-Available Services
+This starts:
 
-| Service       | URL                   |
-| ------------- | --------------------- |
-| Edge Node     | http://localhost:8000 |
-| Origin Server | http://localhost:9000 |
-| Prometheus    | http://localhost:9090 |
-| Grafana       | http://localhost:3000 |
+| Service     | URL                     | What it is                       |
+|-------------|-------------------------|----------------------------------|
+| edge-1      | http://localhost:8001   | Reverse proxy node               |
+| edge-2      | http://localhost:8002   | Reverse proxy node               |
+| edge-3      | http://localhost:8003   | Reverse proxy node               |
+| origin      | http://localhost:9000   | Backend the edges proxy to       |
+| prometheus  | http://localhost:9090   | Scrapes edge metrics every 15s   |
+| grafana     | http://localhost:3000   | Dashboards (login admin/admin)   |
 
----
+Try it:
 
-# Development Roadmap
+```bash
+curl -i http://localhost:8001/static/style.css   # cacheable -> first MISS, then HIT
+curl -i http://localhost:8001/api/data           # slow, never cached
+curl -i http://localhost:8001/metrics            # Prometheus metrics
+```
 
-### Phase 1
+Look at the `X-Cache` and `X-Edge-Node` response headers to see caching in action.
 
-* Project setup
-* Docker infrastructure
-* Reverse proxy
-* Origin server
+## Load tests
 
-### Phase 2
+```bash
+pip install httpx
+python load_tests/scenarios.py cache       # cache hit ratio + latency drop
+python load_tests/scenarios.py ratelimit   # burst -> 429s after the limit
+python load_tests/scenarios.py bot         # blocked User-Agent -> 403
+```
 
-* LRU caching
-* TTL support
-* Cache invalidation
-* Metrics integration
+## Request pipeline (each edge node)
 
-### Phase 3
+1. **Bot detection** — User-Agent blocklist + rapid path-enumeration -> `403`
+2. **Rate limiting** — token bucket, per-API-key or per-IP -> `429`
+3. **Cache lookup** — LRU + TTL, returns immediately on HIT
+4. **Forward to origin** via httpx
+5. **Cache the response** if cacheable (GET, non-`/api`, status 200)
+6. **Emit metrics** and return
 
-* Rate limiting
-* Traffic protection
-* Control plane
+## Layout
 
-### Phase 4
+```
+rivet/
+├── docker-compose.yml
+├── edge/                 # proxy layer (networking) + security
+│   ├── proxy.py          # FastAPI app, request pipeline
+│   ├── cache.py          # LRU cache with TTL
+│   ├── rate_limiter.py   # token bucket
+│   ├── bot_detection.py  # abuse rules
+│   ├── metrics.py        # Prometheus metrics
+│   └── config.py         # env-driven config
+├── origin/               # backend server
+│   └── server.py
+├── monitoring/
+│   └── prometheus.yml
+└── load_tests/
+    └── scenarios.py
+```
 
-* Load balancing
-* Automatic failover
-* Dashboard completion
-* Performance benchmarking
+## Status / TODO
 
----
+Done: reverse proxy, LRU cache + TTL, cache purge (`DELETE /cache?path=...`),
+per-IP / per-API-key rate limiting, basic bot detection, Prometheus metrics,
+3-node docker-compose with Prometheus + Grafana wired up.
 
-# Learning Outcomes
+Still to build (matches the original spec):
+- **Observability** — Grafana dashboards (cache hit %, latency p95, 429/403 counts,
+  node health). Prometheus is already scraping; dashboards just need building.
+- **Control plane** — a separate service to push rate-limit / cache rules to edges at runtime.
+- **Failover & routing** — health checks + latency-aware routing across nodes.
+- **Distributed rate-limit state** — optional Redis so limits are shared across edges.
 
-This project explores practical backend and distributed systems concepts including:
-
-* Reverse Proxy Design
-* Distributed Systems
-* Edge Computing
-* HTTP Networking
-* Load Balancing
-* Caching Strategies
-* Rate Limiting Algorithms
-* Fault Tolerance
-* Observability
-* Containerized Deployment
-* Performance Engineering
-
----
-
-# License
-
-This project is developed for educational and learning purposes.
+Tunable per edge via env vars (see `edge/config.py`): `DEFAULT_TTL`, `RATE_LIMIT_CAPACITY`,
+`RATE_LIMIT_WINDOW`, `CACHE_MAX_SIZE`, `BOT_PATH_THRESHOLD`, `BOT_WINDOW_SECONDS`.
